@@ -21,7 +21,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name='cassandra-medusa',
-    version='0.11.0-dev',
+    version='0.12.0-dev',
     author='The Last Pickle',
     author_email='medusa@thelastpickle.com',
     url='https://github.com/thelastpickle/cassandra-medusa',
@@ -42,7 +42,7 @@ setuptools.setup(
     packages=setuptools.find_packages(),
     install_requires=[
         'python-dateutil<2.8.1,>=2.1',
-        'Click>=6.7',
+        'Click>=8.0.1',
         'click-aliases>=1.0.1',
         'PyYAML>=5.1',
         'cassandra-driver>=3.25.0',

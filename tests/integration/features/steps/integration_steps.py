@@ -432,7 +432,7 @@ def get_args(context, storage_provider, client_encryption, cassandra_url, use_mg
 
     storage_args = {"prefix": storage_prefix}
     cassandra_args = {
-        "is_ccm": 1,
+        "is_ccm": "1",
         "stop_cmd": CCM_STOP,
         "start_cmd": CCM_START,
         "cql_username": "cassandra",
@@ -452,7 +452,8 @@ def get_args(context, storage_provider, client_encryption, cassandra_url, use_mg
                 "sstableloader",
             )
         ),
-        "resolve_ip_addresses": False
+        "resolve_ip_addresses": "False",
+        "use_sudo": "True",
     }
 
     if client_encryption == 'with_client_encryption':
@@ -572,6 +573,21 @@ def _i_verify_over_grpc_backup_exists(context, backup_name):
     for backup in backups:
         if backup.backupName == backup_name:
             found = True
+            break
+    assert found is True
+
+
+@then(r'I verify over gRPC that the backup "{backup_name}" has the expected placement information')
+def _i_verify_over_grpc_backup_has_expected_information(context, backup_name):
+    found = False
+    backups = context.grpc_client.get_backups()
+    for backup in backups:
+        if backup.backupName == backup_name:
+            found = True
+            assert backup.nodes[0].host == "127.0.0.1"
+            assert backup.nodes[0].datacenter in ["dc1", "datacenter1", "DC1"]
+            assert backup.nodes[0].rack in ["rack1", "r1"]
+            assert len(backup.nodes[0].tokens) >= 1
             break
     assert found is True
 
